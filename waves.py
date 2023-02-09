@@ -17,12 +17,11 @@ class GaussianIncidentWave(object):
         self._tp = tp
         self._sigma = sigma #sigma stands for what variable?
 
-    def value (self, time, points):
+    def value(self, time, points):
 
         theta = (self._direction[0]*points[0]+self._direction[1]*points[1]+self._direction[2]*points[2]) / self._speed
         trig = _np.cos(2 * _np.pi * (time - theta) * self._frequency)
         zeta = (time-self._tp-theta)**2
         sigma_squared = self._sigma**2
         exp = _np.exp(-1 * (zeta) / (2 * sigma_squared))
-        value = 1 * trig * exp
-        return value
+        return 1 * trig * exp
