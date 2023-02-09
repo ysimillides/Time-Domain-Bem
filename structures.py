@@ -68,30 +68,34 @@ class EquispacedTimeStepsToFrequencyFactory(FrequencyFactoryBase):
 
     @property
     def time_steps(self):
-        time_steps = _np.linspace(start=0, stop=self.final_time, num=self._number_of_time_steps)
-        return time_steps
+        return _np.linspace(
+            start=0, stop=self.final_time, num=self._number_of_time_steps
+        )
 
     @property
     def frequency_steps(self):
-        freqs_steps = _np.linspace(start=0, stop=self.final_time, num=self._number_of_frequencies)
-        return freqs_steps #added to check some calculations
+        return _np.linspace(
+            start=0, stop=self.final_time, num=self._number_of_frequencies
+        )
 
     @property
     def frequencies(self):
-        frequencies = _np.arange(self._number_of_frequencies)
-        return frequencies #possibly redundant due to the calculation of zeta below
+        return _np.arange(self._number_of_frequencies)
 
     @property
     def wavenumbers(self):
         zeta = self._radius* _np.exp(2j * _np.pi * _np.arange(self._number_of_frequencies) / self._number_of_frequencies)
         generator = self._generating_function(zeta)
-        wavenumbers = generator / (self._speed * self.dt)
-        return wavenumbers
+        return generator / (self._speed * self.dt)
 
     @property
     def zeta(self):
-        zeta = self._radius * _np.exp(2j * _np.pi * _np.arange(self._number_of_frequencies) / self._number_of_frequencies)
-        return zeta
+        return self._radius * _np.exp(
+            2j
+            * _np.pi
+            * _np.arange(self._number_of_frequencies)
+            / self._number_of_frequencies
+        )
 
     def forward_transform(self,values):
         if self._number_of_frequencies >= self._number_of_time_steps:
@@ -117,8 +121,6 @@ class EquispacedTimeStepsToFrequencyFactory(FrequencyFactoryBase):
                 _lambda_ = (1 / self._radius) ** i
                 values[i, :, :] = _lambda_ * values[i, :, :]  # commented out the radius bit
             result = values[0:self._number_of_time_steps, :,:]  # re-arranged order #changed from 0 to timesteps to difference till end
-        if self._number_of_time_steps > self._number_of_frequencies:
-            pass  # havent managed to underresolve yet,possibly just normal solve from original solution
         return result  # needs to have further calculation of the radius, due to mistake in calculation. changed from time_steps to freqs
 
 class TimeDomainBoundaryData(object):
